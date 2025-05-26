@@ -136,18 +136,28 @@ exports.handler = async (event, context) => {
 async function checkIfUserHasTrialBefore(email) {
   try {
     // Use SendGrid contacts API to check if user exists with trial_used flag
+    // We'll simplify the query to reduce chance of syntax errors
     const request = {
       method: 'POST',
       url: '/v3/marketing/contacts/search',
       body: {
-        query: `email = '${email}' AND CONTAINS(custom_fields, 'trial_used') AND custom_fields.trial_used = true`
+        query: `email = '${email}'`
       }
     };
 
     const [response] = await sgClient.request(request);
     
-    // If we get results, user has used trial before
-    return response.body.contact_count > 0;
+    // If we get results, check if any of the contacts have the trial_used field set to '1'
+    if (response.body.contact_count > 0 && response.body.result) {
+      for (const contact of response.body.result) {
+        if (contact.custom_fields && contact.custom_fields.trial_used === '1') {
+          return true;
+        }
+      }
+    }
+    
+    // No trial used previously
+    return false;
   } catch (error) {
     console.error('Error checking user trial status:', error);
     // If there's an error, we'll assume they haven't used a trial
@@ -171,7 +181,7 @@ async function addUserToSendGrid(email) {
           {
             email,
             custom_fields: {
-              trial_used: true
+              trial_used: '1'
             }
           }
         ]
