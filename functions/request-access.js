@@ -44,11 +44,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    console.log('========== REQUEST HANDLER START ==========');
+    console.log('Request body:', event.body);
+    
     // Parse request body
     const data = JSON.parse(event.body);
     const { email } = data;
+    
+    console.log('Parsed email:', email);
 
     if (!email) {
+      console.log('Email validation failed: Email is required');
       return {
         statusCode: 400,
         headers,
@@ -69,10 +75,15 @@ exports.handler = async (event, context) => {
       };
     }
 
+    console.log('Checking if user has trial before:', hasTrialBefore);
+    
     // Generate Kisi access link
+    console.log('Attempting to generate Kisi access link for email:', email);
     const accessLink = await generateKisiAccessLink(email);
 
+    console.log('Received access link:', accessLink);
     if (!accessLink) {
+      console.error('Access link generation failed: Received null or empty link');
       throw new Error('Failed to generate access link');
     }
 
@@ -135,6 +146,9 @@ exports.handler = async (event, context) => {
  */
 async function checkIfUserHasTrialBefore(email) {
   try {
+    console.log('========== CHECKING USER TRIAL STATUS ==========');
+    console.log(`Checking if user ${email} has used trial before`);
+    
     // Use SendGrid contacts API to check if user exists with trial_used flag
     // We'll simplify the query to reduce chance of syntax errors
     const request = {
@@ -145,18 +159,28 @@ async function checkIfUserHasTrialBefore(email) {
       }
     };
 
+    console.log('SendGrid search request:', JSON.stringify(request.body, null, 2));
+    
     const [response] = await sgClient.request(request);
+    console.log('SendGrid search response status:', response.statusCode);
+    console.log('Contact count found:', response.body.contact_count);
     
     // If we get results, check if any of the contacts have the trial_used field set to '1'
     if (response.body.contact_count > 0 && response.body.result) {
+      console.log('Found contacts:', JSON.stringify(response.body.result, null, 2));
+      
       for (const contact of response.body.result) {
+        console.log('Checking contact:', contact.email);
+        console.log('Custom fields:', contact.custom_fields ? JSON.stringify(contact.custom_fields, null, 2) : 'none');
+        
         if (contact.custom_fields && contact.custom_fields.trial_used === '1') {
+          console.log('User has used trial before');
           return true;
         }
       }
     }
     
-    // No trial used previously
+    console.log('User has not used trial before');
     return false;
   } catch (error) {
     console.error('Error checking user trial status:', error);
@@ -171,6 +195,10 @@ async function checkIfUserHasTrialBefore(email) {
  */
 async function addUserToSendGrid(email) {
   try {
+    console.log('========== SENDGRID USER ADDITION ==========');
+    console.log(`Adding user ${email} to SendGrid with trial_used flag`);
+    console.log('TRIAL_LIST_ID:', TRIAL_LIST_ID);
+    
     // First, upsert the contact with custom field
     const request = {
       method: 'PUT',
@@ -188,8 +216,11 @@ async function addUserToSendGrid(email) {
       }
     };
 
-    await sgClient.request(request);
-    console.log(`User ${email} added to SendGrid contacts with trial_used flag`);
+    console.log('SendGrid request payload:', JSON.stringify(request.body, null, 2));
+    
+    const [response] = await sgClient.request(request);
+    console.log('SendGrid API response status:', response.statusCode);
+    console.log('SendGrid API response:', JSON.stringify(response.body, null, 2));
     
     return true;
   } catch (error) {
@@ -203,6 +234,11 @@ async function addUserToSendGrid(email) {
  */
 async function generateKisiAccessLink(email) {
   try {
+    console.log('========== KISI ACCESS LINK GENERATION ==========');
+    console.log('Environment variables check:');
+    console.log('KISI_API_KEY set:', !!KISI_API_KEY);
+    console.log('KISI_GROUP_ID:', KISI_GROUP_ID);
+    
     // Set expiration to end of current day
     const now = new Date();
     const endOfDay = new Date(now);
@@ -210,17 +246,24 @@ async function generateKisiAccessLink(email) {
     
     // Format dates for Kisi API
     const expiresAt = endOfDay.toISOString();
+    console.log('Expiration timestamp:', expiresAt);
+    
+    // Prepare request payload
+    const requestPayload = {
+      group_link: {
+        group_id: KISI_GROUP_ID,
+        name: `Trial Day - ${email}`,
+        expires_at: expiresAt
+      }
+    };
+    
+    console.log('Kisi API request payload:', JSON.stringify(requestPayload, null, 2));
     
     // Create the group link via Kisi API
+    console.log('Sending request to Kisi API...');
     const response = await axios.post(
       'https://api.kisi.io/group_links',
-      {
-        group_link: {
-          group_id: KISI_GROUP_ID,
-          name: `Trial Day - ${email}`,
-          valid_until: expiresAt
-        }
-      },
+      requestPayload,
       {
         headers: {
           'Authorization': `KISI-LOGIN ${KISI_API_KEY}`,
@@ -230,7 +273,16 @@ async function generateKisiAccessLink(email) {
       }
     );
     
+    console.log('Kisi API response status:', response.status);
+    console.log('Kisi API response data:', JSON.stringify(response.data, null, 2));
+    
     // Extract and return the access URL
+    if (!response.data || !response.data.url) {
+      console.error('Invalid response from Kisi API - missing URL in response data');
+      console.error('Full response:', JSON.stringify(response.data, null, 2));
+      return null;
+    }
+    
     return response.data.url;
   } catch (error) {
     console.error('Error generating Kisi access link:', error);
@@ -246,6 +298,11 @@ async function generateKisiAccessLink(email) {
  */
 async function sendAccessEmail(email, accessLink) {
   try {
+    console.log('========== SENDING ACCESS EMAIL ==========');
+    console.log(`Sending access email to ${email}`);
+    console.log('FROM_EMAIL:', process.env.FROM_EMAIL);
+    console.log('SENDGRID_TEMPLATE_ID:', process.env.SENDGRID_TEMPLATE_ID);
+    
     const msg = {
       to: email,
       from: process.env.FROM_EMAIL,
@@ -257,8 +314,10 @@ async function sendAccessEmail(email, accessLink) {
       }
     };
     
+    console.log('Email content:', JSON.stringify(msg, null, 2));
+    
     await sgMail.send(msg);
-    console.log(`Access email sent to ${email}`);
+    console.log(`Access email sent successfully to ${email}`);
     
     return true;
   } catch (error) {
