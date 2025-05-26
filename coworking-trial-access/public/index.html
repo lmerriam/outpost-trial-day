@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coworking Space Trial Access</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="access-form">
+            <h1>Welcome to your Outpost</h1>
+            <p>Enter your email and we'll send you an instant access link</p>
+            
+            <form id="access-request-form">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Your email address" required>
+                </div>
+                <button type="submit" id="submit-btn">Get Access</button>
+            </form>
+            
+            <div id="status-message" class="hidden"></div>
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
+            
+            <!-- Door Access Modal -->
+            <div id="access-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>Door Access Ready!</h2>
+                    <p>Click the button below to open the door now:</p>
+                    <button id="open-door-btn" class="door-btn">OPEN DOOR</button>
+                    
+                    <div class="timer-container">
+                        <p>Time remaining: <span id="countdown">60</span> seconds</p>
+                        <div class="progress-bar">
+                            <div id="timer-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="note">Note: You'll also receive an email with access that works all day.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
