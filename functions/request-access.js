@@ -205,7 +205,7 @@ async function generateKisiAccessLink(email) {
     const response = await axios.post(
       'https://api.kisi.io/group_links',
       {
-        group_id: ${KISI_GROUP_ID},
+        group_id: KISI_GROUP_ID,
         name: `Trial Day - ${email}`,
         expires_at: expiresAt
       },
