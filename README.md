@@ -34,6 +34,16 @@ A simple web application that allows visitors to request trial day access to a c
 - **Access Control**: Kisi API
 - **Deployment**: Netlify (recommended)
 
+## Development vs Production Mode
+
+The application includes automatic environment detection:
+
+- **Development Mode**: When running locally (`localhost`, `127.0.0.1`, or using `file:` protocol), the app uses mock data instead of making actual API calls. This allows for testing the UI and user flow without setting up API keys.
+  
+- **Production Mode**: When deployed to a production domain, the app makes actual API calls to the serverless functions to process access requests.
+
+This makes development and testing easier while ensuring the production environment uses the real APIs.
+
 ## Setup Instructions
 
 ### Prerequisites

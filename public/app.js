@@ -37,53 +37,63 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.classList.add('hidden');
         
         try {
-            // DEVELOPMENT MODE: Mock API response for testing
-            // In production, this would be replaced with the actual API call
-            try {
-                // Simulating API call delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Mock successful response
-                const mockResponseData = {
-                    message: 'Success! Please check your email for access instructions.',
-                    accessLink: 'https://example.com/mock-access-link'
-                };
-                
-                // Show success message
-                showMessage(mockResponseData.message, 'success');
-                
-                // Set access link and show modal
-                accessLink = mockResponseData.accessLink;
-                showAccessModal();
-                
-                // Comment out the actual API call for now
-                /*
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email }),
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.message || 'An error occurred. Please try again.');
-                }
-                
-                // Show success message
-                showMessage(data.message || 'Access link has been sent to your email. Please check your inbox.', 'success');
-                
-                // Check if we received an access link and show the modal
-                if (data.accessLink) {
-                    accessLink = data.accessLink;
+            // Check if we're in development or production mode
+            const isDevelopment = window.location.hostname === 'localhost' || 
+                                  window.location.hostname === '127.0.0.1' ||
+                                  window.location.protocol === 'file:';
+            
+            if (isDevelopment) {
+                // DEVELOPMENT MODE: Mock API response for testing
+                console.log('Running in development mode with mock data');
+                try {
+                    // Simulating API call delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Mock successful response
+                    const mockResponseData = {
+                        message: 'Success! Please check your email for access instructions.',
+                        accessLink: 'https://example.com/mock-access-link'
+                    };
+                    
+                    // Show success message
+                    showMessage(mockResponseData.message, 'success');
+                    
+                    // Set access link and show modal
+                    accessLink = mockResponseData.accessLink;
                     showAccessModal();
+                } catch (mockError) {
+                    console.error('Mock error:', mockError);
+                    throw new Error('Network error. Please try again.');
                 }
-                */
-            } catch (fetchError) {
-                console.error('Fetch error:', fetchError);
-                throw new Error('Network error. Please try again.');
+            } else {
+                // PRODUCTION MODE: Make actual API call
+                try {
+                    const response = await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email }),
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'An error occurred. Please try again.');
+                    }
+                    
+                    // Show success message
+                    showMessage(data.message || 'Access link has been sent to your email. Please check your inbox.', 'success');
+                    
+                    // Check if we received an access link and show the modal
+                    if (data.accessLink) {
+                        accessLink = data.accessLink;
+                        showAccessModal();
+                    }
+                } catch (fetchError) {
+                    console.error('API error:', fetchError);
+                    throw new Error('Network error. Please try again.');
+                }
             }
             
             // Reset form
