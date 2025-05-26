@@ -1,11 +1,19 @@
 [build]
   publish = "public"
   functions = "functions"
+  command = "npm install"
 
 [dev]
   publish = "public"
   functions = "functions"
   port = 8888
+
+[functions]
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_ENV = "production"
+  DEBUG = "true" 
 
 [[redirects]]
   from = "/*"

@@ -91,8 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         showAccessModal();
                     }
                 } catch (fetchError) {
-                    console.error('API error:', fetchError);
-                    throw new Error('Network error. Please try again.');
+            console.error('API error:', fetchError);
+            
+            // Extract the error message from the response if available
+            let errorMessage = 'Network error. Please try again.';
+            
+            // This handles fetch API errors which don't have the same structure as axios errors
+            if (fetchError.message) {
+                errorMessage = fetchError.message;
+            }
+            
+            throw new Error(errorMessage);
                 }
             }
             

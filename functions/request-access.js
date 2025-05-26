@@ -94,11 +94,37 @@ exports.handler = async (event, context) => {
   } catch (error) {
     console.error('Error processing request:', error);
     
+    // Provide more specific error messages based on the error
+    let errorMessage = 'An error occurred while processing your request. Please try again.';
+    let statusCode = 500;
+    
+    if (error.response) {
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers
+      });
+      
+      // Customize error message based on the status code
+      if (error.response.status === 403) {
+        errorMessage = 'Authentication error with access control system. Please contact support.';
+      } else if (error.response.status === 401) {
+        errorMessage = 'Authorization error with access control system. Please contact support.';
+      } else if (error.response.status === 404) {
+        errorMessage = 'Resource not found. Please verify configuration.';
+      } else if (error.response.status >= 400 && error.response.status < 500) {
+        errorMessage = 'Invalid request to access control system. Please contact support.';
+      }
+      
+      statusCode = error.response.status >= 400 && error.response.status < 600 
+                  ? error.response.status : 500;
+    }
+    
     return {
-      statusCode: 500,
+      statusCode: statusCode,
       headers,
       body: JSON.stringify({ 
-        message: 'An error occurred while processing your request. Please try again.' 
+        message: errorMessage
       })
     };
   }
@@ -185,7 +211,7 @@ async function generateKisiAccessLink(email) {
       },
       {
         headers: {
-          'Authorization': `KISI-LOGIN ${KISI_API_KEY}`,
+          'Authorization': `BEARER ${KISI_API_KEY}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
@@ -196,6 +222,9 @@ async function generateKisiAccessLink(email) {
     return response.data.url;
   } catch (error) {
     console.error('Error generating Kisi access link:', error);
+    console.error('Response data:', error.response ? error.response.data : 'No response data');
+    console.error('Response status:', error.response ? error.response.status : 'No status code');
+    console.error('Response headers:', error.response ? error.response.headers : 'No headers');
     throw error;
   }
 }
