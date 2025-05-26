@@ -159,16 +159,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Open door button click handler
-    openDoorBtn.addEventListener('click', () => {
+    openDoorBtn.addEventListener('click', async () => {
         if (accessLink) {
-            // Open the access link in a new tab
-            window.open(accessLink, '_blank');
-            
-            // Show message that door is opening
-            showMessage('Door is opening. You will also receive an email with access that works all day.', 'success');
-            
-            // Close the modal after a short delay
-            setTimeout(closeModal, 3000);
+            try {
+                // Show loading state
+                openDoorBtn.disabled = true;
+                openDoorBtn.textContent = 'Opening...';
+                
+                // Call the unlock endpoint
+                const response = await fetch('/.netlify/functions/request-access/unlock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({}),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Door unlocked successfully
+                    showMessage('Door unlocked! You will also receive an email with access that works all day.', 'success');
+                } else {
+                    // Fallback to the access link if direct unlock fails
+                    showMessage('Could not unlock door directly. Opening access link...', 'error');
+                    window.open(accessLink, '_blank');
+                }
+                
+                // Close the modal after a short delay
+                setTimeout(closeModal, 3000);
+            } catch (error) {
+                console.error('Error unlocking door:', error);
+                
+                // Fallback to the access link if direct unlock fails
+                showMessage('Could not unlock door directly. Opening access link...', 'error');
+                window.open(accessLink, '_blank');
+                
+                // Close the modal after a short delay
+                setTimeout(closeModal, 3000);
+            } finally {
+                // Reset button state
+                openDoorBtn.disabled = false;
+                openDoorBtn.textContent = 'Open Door';
+            }
         }
     });
 });

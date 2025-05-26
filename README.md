@@ -7,6 +7,7 @@ A simple web application that allows visitors to request trial day access to a c
 - Clean, responsive UI for both tablet and mobile devices
 - Email validation and storage via SendGrid
 - Temporary access link generation via Kisi API
+- Direct door unlock functionality via Kisi API
 - Immediate access popup with countdown timer and "Open Door" button
 - Serverless architecture for easy deployment and maintenance
 - Tracks users who have already received trial access
@@ -98,6 +99,7 @@ This makes development and testing easier while ensuring the production environm
 
 1. Generate an API key in your Kisi account
 2. Note your Group ID for the access you want to grant
+3. Find your Lock ID for the front door in Kisi (needed for direct door unlock functionality)
 
 ### Local Development
 

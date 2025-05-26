@@ -10,6 +10,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // Configure Kisi API
 const KISI_API_KEY = process.env.KISI_API_KEY;
 const KISI_GROUP_ID = process.env.KISI_GROUP_ID;
+const KISI_LOCK_ID = process.env.KISI_LOCK_ID;
 
 // SendGrid list ID for trial users
 const TRIAL_LIST_ID = process.env.SENDGRID_TRIAL_LIST_ID;
@@ -46,9 +47,41 @@ exports.handler = async (event, context) => {
   try {
     console.log('========== REQUEST HANDLER START ==========');
     console.log('Request body:', event.body);
+    console.log('Path:', event.path);
     
     // Parse request body
     const data = JSON.parse(event.body);
+    
+    // Check if this is a door unlock request
+    if (event.path === '/.netlify/functions/request-access/unlock') {
+      console.log('Processing door unlock request');
+      
+      try {
+        // Trigger door unlock
+        await unlockDoor();
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            success: true,
+            message: 'Door unlocked successfully'
+          })
+        };
+      } catch (unlockError) {
+        console.error('Failed to unlock door:', unlockError);
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ 
+            success: false,
+            message: 'Failed to unlock door. Please try again or use the access link.'
+          })
+        };
+      }
+    }
+    
+    // Regular trial access request flow
     const { email } = data;
     
     console.log('Parsed email:', email);
@@ -293,6 +326,45 @@ async function generateKisiAccessLink(email) {
     console.error('Response data:', error.response ? error.response.data : 'No response data');
     console.error('Response status:', error.response ? error.response.status : 'No status code');
     console.error('Response headers:', error.response ? error.response.headers : 'No headers');
+    throw error;
+  }
+}
+
+/**
+ * Unlock door directly via Kisi API
+ */
+async function unlockDoor() {
+  try {
+    console.log('========== UNLOCKING DOOR ==========');
+    console.log('KISI_LOCK_ID:', KISI_LOCK_ID);
+    
+    if (!KISI_LOCK_ID) {
+      console.error('KISI_LOCK_ID is not configured');
+      throw new Error('Lock ID not configured');
+    }
+    
+    // Make the request to unlock the door
+    console.log('Sending unlock request to Kisi API...');
+    const response = await axios.post(
+      `https://api.kisi.io/locks/${KISI_LOCK_ID}/unlock`,
+      {}, // Empty body
+      {
+        headers: {
+          'Authorization': `KISI-LOGIN ${KISI_API_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
+    
+    console.log('Kisi API unlock response status:', response.status);
+    console.log('Kisi API unlock response data:', JSON.stringify(response.data, null, 2));
+    
+    return true;
+  } catch (error) {
+    console.error('Error unlocking door:', error);
+    console.error('Response data:', error.response ? error.response.data : 'No response data');
+    console.error('Response status:', error.response ? error.response.status : 'No status code');
     throw error;
   }
 }
