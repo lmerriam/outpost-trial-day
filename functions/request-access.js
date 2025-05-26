@@ -253,7 +253,7 @@ async function generateKisiAccessLink(email) {
       group_link: {
         group_id: KISI_GROUP_ID,
         name: `Trial Day - ${email}`,
-        expires_at: expiresAt
+        valid_until: expiresAt
       }
     };
     
@@ -276,14 +276,18 @@ async function generateKisiAccessLink(email) {
     console.log('Kisi API response status:', response.status);
     console.log('Kisi API response data:', JSON.stringify(response.data, null, 2));
     
-    // Extract and return the access URL
-    if (!response.data || !response.data.url) {
-      console.error('Invalid response from Kisi API - missing URL in response data');
+    // Extract the secret and construct the access URL
+    if (!response.data || !response.data.secret) {
+      console.error('Invalid response from Kisi API - missing secret in response data');
       console.error('Full response:', JSON.stringify(response.data, null, 2));
       return null;
     }
     
-    return response.data.url;
+    // Construct the full URL according to Kisi API docs
+    const accessUrl = `https://web.kisi.io/grouplinks/${response.data.secret}`;
+    console.log('Constructed access URL:', accessUrl);
+    
+    return accessUrl;
   } catch (error) {
     console.error('Error generating Kisi access link:', error);
     console.error('Response data:', error.response ? error.response.data : 'No response data');
