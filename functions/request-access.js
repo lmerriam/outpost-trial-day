@@ -218,7 +218,7 @@ async function generateKisiAccessLink(email) {
         group_link: {
           group_id: KISI_GROUP_ID,
           name: `Trial Day - ${email}`,
-          expires_at: expiresAt
+          valid_until: expiresAt
         }
       },
       {
