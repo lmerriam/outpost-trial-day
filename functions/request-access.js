@@ -211,7 +211,7 @@ async function generateKisiAccessLink(email) {
       },
       {
         headers: {
-          'Authorization': `BEARER ${KISI_API_KEY}`,
+          'Authorization': `KISI-LOGIN ${KISI_API_KEY}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
