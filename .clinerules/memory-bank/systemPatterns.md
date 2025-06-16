@@ -32,7 +32,7 @@ The serverless function acts as a facade to simplify interactions with external 
 ### 3. Progressive Enhancement
 The application is designed to work even with limited JavaScript support:
 - Core form submission works without JS
-- Enhanced features (countdown timer, direct unlock) require JS
+- Enhanced features (direct unlock) require JS
 - Graceful degradation if features aren't available
 
 ### 4. Stateless Architecture
@@ -47,13 +47,29 @@ The application is designed to work even with limited JavaScript support:
 ┌─────────────────────────────────────┐
 │  index.html                         │
 │  ┌─────────────────────────────┐    │
+│  │  Header Component           │    │
+│  └─────────────────────────────┘    │
+│  ┌─────────────────────────────┐    │
 │  │  Form Component             │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Success Modal Component    │    │
+│  │  Status Message Component   │    │
+│  └─────────────────────────────┘    │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│  success.html                       │
+│  ┌─────────────────────────────┐    │
+│  │  Header Component           │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Status Message Component   │    │
+│  │  Primary Message Component  │    │
+│  └─────────────────────────────┘    │
+│  ┌─────────────────────────────┐    │
+│  │  Door Unlock Component      │    │
+│  └─────────────────────────────┘    │
+│  ┌─────────────────────────────┐    │
+│  │  Info Section Component     │    │
 │  └─────────────────────────────┘    │
 └─────────────────────────────────────┘
 ```
@@ -81,12 +97,12 @@ The application is designed to work even with limited JavaScript support:
 
 ### 1. Email Submission Flow
 ```
-User Input → Validation → Check Previous Trial → Generate Access → Send Email → Display Success
+User Input → Validation → Check Previous Trial → Generate Access → Send Email → Redirect to Success Page
 ```
 
 ### 2. Door Unlock Flow
 ```
-Open Door Button → API Request → Kisi Unlock Endpoint → Success Feedback → Modal Auto-close
+Open Door Button → API Request → Kisi Unlock Endpoint → Success Feedback → Status Update
 ```
 
 ### 3. Error Handling Flow
@@ -100,8 +116,10 @@ API Error → Log Details → User-friendly Message → Fallback Instructions �
 
 2. **Serverless Architecture**: Using Netlify Functions to eliminate the need for a dedicated server and simplify deployment.
 
-3. **No Frontend Frameworks**: Using vanilla JavaScript to minimize dependencies and loading time, important for kiosk usage.
+3. **No Frontend Frameworks**: Using vanilla JavaScript to minimize dependencies and loading time, important for fast performance on user devices.
 
 4. **Environment-based Logic**: Detecting local vs production environments to provide appropriate behaviors without configuration changes.
 
-5. **Kiosk Mode Considerations**: Ensuring the app doesn't get stuck in external sites by preventing new tab openings and implementing auto-reset functionality.
+5. **Design System Consistency**: Following Outpost's black/white minimalist design language with appropriate spacing, typography, and visual elements.
+
+6. **User Device Flow**: Optimizing for personal devices with emphasis on clear, linear progression rather than kiosk-specific circular flows.

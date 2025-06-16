@@ -4,9 +4,10 @@
 
 ### Frontend
 - **HTML/CSS/JavaScript**: Vanilla implementation without frameworks for simplicity
-- **Responsive Design**: Mobile and tablet friendly for use on kiosk devices
+- **Responsive Design**: Mobile and tablet friendly for use on personal devices
 - **Progressive Enhancement**: Core functionality works without JavaScript
-- **CSS Variables**: Used for theming and consistent styling
+- **Design System**: Minimalist black/white aesthetic matching Outpost's website
+- **CSS Variables**: Used for theming and consistent styling with --color-dark, --color-light, etc.
 
 ### Backend
 - **Serverless Functions**: Node.js functions deployed on Netlify

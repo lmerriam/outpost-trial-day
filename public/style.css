@@ -1,3 +1,17 @@
+:root {
+    --color-background: #f2f2f2;
+    --color-dark: #000000;
+    --color-light: #ffffff;
+    --color-text: #333333;
+    --color-text-light: #ffffff;
+    --color-success: #1c7847;
+    --color-success-bg: #e7f7ee;
+    --color-error: #c62828;
+    --color-error-bg: #ffebee;
+    --shadow-standard: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --border-radius: 30px;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,9 +20,24 @@
 }
 
 body {
-    background-color: #f5f5f7;
-    color: #333;
+    background-color: var(--color-background);
+    color: var(--color-text);
     line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    padding: 20px;
+    text-align: center;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
 }
 
 .container {
@@ -21,9 +50,9 @@ body {
 }
 
 .access-form {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-standard);
     padding: 40px;
     width: 100%;
     max-width: 500px;
@@ -48,35 +77,42 @@ input {
     width: 100%;
     padding: 15px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 25px;
     font-size: 16px;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 input:focus {
-    border-color: #0070f3;
+    border-color: var(--color-dark);
     outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 button {
-    background-color: #0070f3;
-    color: white;
+    background-color: var(--color-light);
+    color: var(--color-dark);
     border: none;
-    border-radius: 6px;
+    border-radius: 25px;
     padding: 15px 30px;
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
     width: 100%;
+    box-shadow: var(--shadow-standard);
 }
 
 button:hover {
-    background-color: #0051a8;
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
 }
 
 button:disabled {
-    background-color: #ccc;
+    background-color: #f0f0f0;
+    color: #999;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .hidden {
@@ -84,18 +120,18 @@ button:disabled {
 }
 
 .success {
-    background-color: #e7f7ee;
-    color: #1c7847;
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
     padding: 15px;
-    border-radius: 6px;
+    border-radius: 15px;
     margin-top: 20px;
 }
 
 .error {
-    background-color: #ffebee;
-    color: #c62828;
+    background-color: var(--color-error-bg);
+    color: var(--color-error);
     padding: 15px;
-    border-radius: 6px;
+    border-radius: 15px;
     margin-top: 20px;
 }
 
@@ -106,7 +142,7 @@ button:disabled {
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    border-top: 4px solid #0070f3;
+    border-top: 4px solid var(--color-dark);
     width: 30px;
     height: 30px;
     animation: spin 1s linear infinite;
@@ -148,17 +184,18 @@ button:disabled {
 }
 
 .door-btn {
-    background-color: #28a745;
-    color: white;
+    background-color: var(--color-dark);
+    color: var(--color-light);
     font-weight: bold;
     font-size: 18px;
     padding: 15px 30px;
     margin: 20px 0;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
 }
 
 .door-btn:hover {
-    background-color: #218838;
+    background-color: #333;
+    transform: translateY(-2px);
 }
 
 .timer-container {
@@ -190,9 +227,9 @@ button:disabled {
 /* Responsive styles for smaller screens and tablets */
 /* Success Page Styles */
 .success-page {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-standard);
     padding: 40px;
     width: 100%;
     max-width: 500px;
@@ -201,22 +238,26 @@ button:disabled {
 
 .primary-message {
     font-size: 18px;
-    color: #1c7847;
-    background-color: #e7f7ee;
-    padding: 15px;
-    border-radius: 6px;
+    color: var(--color-text);
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 20px;
     margin-bottom: 30px;
     font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .door-unlock-section {
     margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 .door-unlock-section h2 {
     font-size: 20px;
-    margin-bottom: 10px;
-    color: #333;
+    margin-bottom: 15px;
+    color: var(--color-dark);
 }
 
 .info-section {

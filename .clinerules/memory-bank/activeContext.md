@@ -23,6 +23,9 @@ The current focus is on transitioning the application from a kiosk-first approac
 - Added a "Need immediate access?" section for the door unlock option
 - Enhanced styling with appropriate colors and visual hierarchy
 - Removed intermediate messaging and delays for a smoother transition between pages
+- Applied Outpost's design language with black/white minimalist aesthetic
+- Added a header bar with the Outpost Hood River branding
+- Improved button styling and visual feedback
 
 ### Development Environment
 - Updated the application to use real API keys in local development mode
@@ -66,6 +69,9 @@ The flow is designed to be simple and intuitive:
 - Clear visual hierarchy to guide users' attention
 - Smooth transitions between pages without intermediate messages or delays
 - Elimination of kiosk-specific features like auto-reset and countdown timers
+- Consistent branding with Outpost's main website
+- Minimalist black/white design language with subtle shadows and rounded corners
+- Responsive design that works well on mobile devices
 
 ### Performance Insights
 - Direct API calls provide faster response than redirecting to third-party interfaces
