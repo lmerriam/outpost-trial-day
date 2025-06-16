@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (response.ok && data.success) {
                     // Door unlocked successfully
-                    showMessage('Door unlocked! You will also receive an email with access that works all day.', 'success');
+                    showMessage('Door unlocked! For future unlocks, use the trial pass email we just sent you.', 'success');
                 } else {
                     // Instruct to check email
                     showMessage('Could not unlock door directly. Please check your email for the access link.', 'error');

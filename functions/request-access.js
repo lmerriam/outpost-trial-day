@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
-          message: 'You have already used your trial day. Please contact us for membership options.' 
+          message: 'You have already used your 2-hour tour access. Please contact us for membership options.' 
         })
       };
     }
@@ -272,20 +272,20 @@ async function generateKisiAccessLink(email) {
     console.log('KISI_API_KEY set:', !!KISI_API_KEY);
     console.log('KISI_GROUP_ID:', KISI_GROUP_ID);
     
-    // Set expiration to end of current day
+    // Set expiration to 2 hours from now
     const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
+    const twoHoursLater = new Date(now);
+    twoHoursLater.setHours(now.getHours() + 2);
     
     // Format dates for Kisi API
-    const expiresAt = endOfDay.toISOString();
+    const expiresAt = twoHoursLater.toISOString();
     console.log('Expiration timestamp:', expiresAt);
     
     // Prepare request payload
     const requestPayload = {
       group_link: {
         group_id: KISI_GROUP_ID,
-        name: `Trial Day - ${email}`,
+        name: `2-Hour Tour - ${email}`,
         valid_until: expiresAt
       }
     };
@@ -384,9 +384,9 @@ async function sendAccessEmail(email, accessLink) {
       from: process.env.FROM_EMAIL,
       templateId: process.env.SENDGRID_TEMPLATE_ID,
       dynamicTemplateData: {
-        subject: 'Your Coworking Space Trial Day Access',
+        subject: 'Your Coworking Space 2-Hour Tour Access',
         access_link: accessLink,
-        expires_at: 'end of today'
+        expires_at: '2 hours from now'
       }
     };
     
