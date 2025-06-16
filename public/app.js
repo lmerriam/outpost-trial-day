@@ -45,15 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(data.message || 'An error occurred. Please try again.');
                 }
                 
-                // Show success message briefly
-                showMessage(data.message || 'Access link has been sent to your email. Please check your inbox.', 'success');
-                
-                // Check if we received an access link and redirect to success page
+                // Immediately redirect to success page
                 if (data.accessLink) {
                     accessLink = data.accessLink;
-                    setTimeout(() => {
-                        redirectToSuccessPage(accessLink);
-                    }, 1000); // Brief delay to show the success message
+                    redirectToSuccessPage(accessLink);
+                } else {
+                    // Only show message if we don't have an access link
+                    showMessage(data.message || 'Access link has been sent to your email. Please check your inbox.', 'success');
                 }
             } catch (fetchError) {
                 console.error('API error:', fetchError);
