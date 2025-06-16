@@ -181,22 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Door unlocked successfully
                     showMessage('Door unlocked! You will also receive an email with access that works all day.', 'success');
                 } else {
-                    // Fallback to the access link if direct unlock fails
-                    showMessage('Could not unlock door directly. Opening access link...', 'error');
-                    window.open(accessLink, '_blank');
+                    // Instead of opening in a new window, instruct to check email
+                    showMessage('Could not unlock door directly. Please check your email for the access link.', 'error');
                 }
                 
-                // Close the modal after a short delay
-                setTimeout(closeModal, 3000);
+                // Close the modal after a longer delay (15 seconds)
+                setTimeout(closeModal, 15000);
             } catch (error) {
                 console.error('Error unlocking door:', error);
                 
-                // Fallback to the access link if direct unlock fails
-                showMessage('Could not unlock door directly. Opening access link...', 'error');
-                window.open(accessLink, '_blank');
+                // Instead of opening in a new window, instruct to check email
+                showMessage('Could not unlock door directly. Please check your email for the access link.', 'error');
                 
-                // Close the modal after a short delay
-                setTimeout(closeModal, 3000);
+                // Close the modal after a longer delay (15 seconds)
+                setTimeout(closeModal, 15000);
             } finally {
                 // Reset button state
                 openDoorBtn.disabled = false;
