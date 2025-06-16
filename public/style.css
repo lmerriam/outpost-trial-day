@@ -188,8 +188,51 @@ button:disabled {
 }
 
 /* Responsive styles for smaller screens and tablets */
+/* Success Page Styles */
+.success-page {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.primary-message {
+    font-size: 18px;
+    color: #1c7847;
+    background-color: #e7f7ee;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.door-unlock-section {
+    margin-bottom: 30px;
+}
+
+.door-unlock-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.info-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.info-section p {
+    margin-bottom: 15px;
+    color: #666;
+    font-style: italic;
+}
+
 @media (max-width: 600px) {
-    .access-form {
+    .access-form, .success-page {
         padding: 30px 20px;
     }
     
