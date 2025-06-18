@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
-          message: 'You have already used your 2-hour tour access. Please contact us for membership options.' 
+          message: 'You have already used your trial pass. You can get a membership or day pass at outpost.hr for instant access' 
         })
       };
     }
