@@ -34,15 +34,16 @@ body {
     text-align: center;
 }
 
-.header h2 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 600;
+.logo {
+    height: 40px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .container {
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 80px); /* Adjusted to account for header height (40px padding + 40px logo) */
     display: flex;
     justify-content: center;
     align-items: center;
